@@ -1,3 +1,3 @@
 # AMBA-AHB
 
-![alt text](https://github.com/psumesh/AMBA-AHB/images/ahb_architecture.jpg?raw=true)
+[AHB MASTER TB ARCHITECTURE](https://github.com/psumesh/AMBA-AHB/images/ahb_architecture.jpg?raw=true)
