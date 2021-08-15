@@ -1,7 +1,7 @@
 # AMBA-AHB MASTER VIP
 
 Testplans
-(https://github.com/psumesh/AMBA-AHB/blob/main/Testplans/ahb_plans.xlsx)
+[](https://github.com/psumesh/AMBA-AHB/blob/main/Testplans/ahb_plans.xlsx)
 
 ![AHB MASTER TB ARCHITECTURE](https://github.com/psumesh/AMBA-AHB/blob/main/images/ahb_architecture.jpg)
 
