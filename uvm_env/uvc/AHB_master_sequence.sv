@@ -47,7 +47,7 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		"WR" : begin
 		      case(htrans_cfg)
 		            "IDLE"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 1;                       //? unknown
 			                                                            master_txn.htrans    == 2'b00;
@@ -57,7 +57,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;                       //?
 												                        master_txn.hmaster   == 1;                       //?
-												                        master_txn.hmastlock == 0;})
+												                        master_txn.hmastlock == 0;
+																		master_txn.hready    == 1;})
 									else
 									    `uvm_error("SEQUENCE", "RANDOMIZE FAILED AT WR IDLE")
 									hwdata        = hwdata        + 1000;
@@ -69,7 +70,7 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		            end
 		
 		            "BUSY"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 1;
 			                                                            master_txn.htrans    == 2'b01;
@@ -79,7 +80,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                
 									finish_item(master_txn);
 					            end
@@ -97,7 +99,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 																		
 									
 					                finish_item(master_txn);
@@ -107,7 +110,6 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		            end
 		
 		            "SEQ"     : begin
-		                        repeat(1) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 1;
 			                                                            master_txn.htrans    == 2'b11;
@@ -117,9 +119,9 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
-					            end
 		
 		            end
 		
@@ -132,7 +134,7 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		"RD" : begin
 		      case(htrans_cfg)
 		            "IDLE"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 0;
 			                                                            master_txn.htrans    == 2'b00;
@@ -142,14 +144,15 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 					            end
 		
 		            end
 		
 		            "BUSY"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 0;
 			                                                            master_txn.htrans    == 2'b01;
@@ -159,7 +162,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 					            end
 		
@@ -176,7 +180,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 																		
 									initial_haddr = initial_haddr + 50;
 					                finish_item(master_txn);
@@ -195,7 +200,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 					            end
 		
@@ -210,7 +216,7 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		"WR_RD" : begin
 		      case(htrans_cfg)
 		            "IDLE"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 1'b1;
 			                                                            master_txn.htrans    == 2'b00;
@@ -220,7 +226,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 									
 									start_item(master_txn);
@@ -232,7 +239,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 																		
 									
 					                finish_item(master_txn);
@@ -241,7 +249,7 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 		            end
 		
 		            "BUSY"    : begin
-		                        repeat(30) begin
+		                        repeat(2) begin
 		                            start_item(master_txn);
 					                assert(master_txn.randomize() with {master_txn.hwrite    == 1'b1;
 			                                                            master_txn.htrans    == 2'b01;
@@ -251,7 +259,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 									
 									start_item(master_txn);
@@ -263,7 +272,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 					            end
 		
@@ -280,7 +290,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 									
 									start_item(master_txn);
@@ -289,10 +300,11 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hsize     == hsize_cfg;
                                                                         master_txn.hburst    == hburst_cfg;
                                                                         master_txn.haddr     == initial_haddr;
-												                        master_txn.hwdata    == hwdata;
+												                        master_txn.hwdata    == 0;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 									initial_haddr = initial_haddr + 50;
 					                finish_item(master_txn);
 					            end
@@ -310,7 +322,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 									hwdata = hwdata + 1000;
 					                finish_item(master_txn);
 									
@@ -323,7 +336,8 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 												                        master_txn.hwdata    == hwdata;
                                                                         master_txn.hsel      == 1;
 												                        master_txn.hmaster   == 1;
-												                        master_txn.hmastlock == 1;})
+												                        master_txn.hmastlock == 1;
+																		master_txn.hready    == 1;})
 					                finish_item(master_txn);
 					            end
 		
