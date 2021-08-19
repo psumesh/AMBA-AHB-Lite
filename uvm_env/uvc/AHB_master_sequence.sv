@@ -1,7 +1,7 @@
 // Umesh Prasad
 //github : https://www.github.com/psumesh
 
-class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
+class AHB_master_sequence extends uvm_sequence #(AHB_master_txn);
 
 	  string str_hwrite;
 	  string hwdata_cfg;
@@ -18,16 +18,16 @@ class AHB_base_sequence extends uvm_sequence #(AHB_master_txn);
 	  
 	  AHB_master_txn master_txn;
 	  
-	  `uvm_declare_p_sequencer(AHB_sequencer)
+	  `uvm_declare_p_sequencer(AHB_master_sequencer)
 	
-	`uvm_object_utils_begin(AHB_base_sequence)
+	`uvm_object_utils_begin(AHB_master_sequence)
 	    `uvm_field_string(str_hwrite, UVM_DEFAULT)
         `uvm_field_string(hwdata_cfg, UVM_DEFAULT)
 		`uvm_field_string(htrans_cfg, UVM_DEFAULT)
 		`uvm_field_int(hsize_cfg,  UVM_DEFAULT)
     `uvm_object_utils_end
 	 
-	function new(string name = "AHB_base_sequence");
+	function new(string name = "AHB_master_sequence");
 	      super.new(name);
 	 endfunction
 	 
