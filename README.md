@@ -9,3 +9,15 @@
 3. WRAP Calculation
 ![AHB WAP CALCULATION](https://github.com/psumesh/AMBA-AHB/blob/main/images/wrap_calculation.jpg)
   [source code](https://github.com/psumesh/AMBA-AHB/blob/main/uvm_env/uvc/AHB_wrap.sv)
+
+
+
+# Pending task 
+
+1. wrap type not implemented in driver
+2. monitor
+3. scoreboard
+4. coverage
+5. refrence model
+6. Script 
+ 
