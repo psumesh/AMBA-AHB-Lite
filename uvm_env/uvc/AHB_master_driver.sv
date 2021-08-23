@@ -1,13 +1,18 @@
+`include "AHB_wrap.sv"
+
 class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 
 	`uvm_component_utils(AHB_master_driver)
 	
 	virtual intf vif;
+	
 	AHB_master_txn master_txn;
+	wraper_class wrapper;
 	bit [31:0] temp_addr;
 	bit [31:0] temp_wdata = 100;
 	string data_type;
 	
+	bit [31:0] address_queue_wrap[$];   //used for collect wrapping address
 	int infinity_increment = 1;
 	
 	function new(string name = "AHB_master_driver", uvm_component parent);
@@ -19,6 +24,8 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 		   `uvm_error("DRIVER", "UVM CONFIG DB NOT FOUND!")
 		   
 		master_txn = AHB_master_txn::type_id::create("master_txn", this);
+		
+		wrapper = new();
 	endfunction
 	
 	function bit [31:0]data(string data_type);
@@ -140,8 +147,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b000, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -188,8 +230,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b000, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -236,8 +313,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b000, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -350,8 +462,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b001, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -398,8 +545,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b001, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -446,8 +628,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b001, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -561,8 +778,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b010, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -609,8 +861,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b010, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -657,8 +944,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b010, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -772,8 +1094,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b011, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -820,8 +1177,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b011, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -868,8 +1260,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b011, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -938,12 +1365,87 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b001 : begin
-						
+						3'b001 : begin                                         //increment	
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= 3'b100;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= master_txn.haddr;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 @(posedge vif.hclk);
+									 
+									begin
+								         master_txn.haddr  = master_txn.haddr  + 4;
+									     master_txn.hwdata = master_txn.hwdata + 10;
+                                     end
+								 
+								 
+								 while(infinity_increment) begin
+								       while(vif.hreadyout == 0 || 'z || 'x) begin
+								           @(posedge vif.hclk);
+								        end
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b11;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= master_txn.haddr;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+								     @(posedge vif.hclk);
+								     begin
+								         master_txn.haddr  = master_txn.haddr  + 4;
+									     master_txn.hwdata = master_txn.hwdata + 10;
+                                     end								 
+								 end
+								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b100, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -990,8 +1492,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b100, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -1038,8 +1575,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b100, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -1153,8 +1725,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b101, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -1201,8 +1808,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b101, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -1249,8 +1891,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b101, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -1364,8 +2041,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b110, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -1412,8 +2124,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b110, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -1460,8 +2207,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b110, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(15) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -1575,8 +2357,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 
 						end
 						
-						3'b010 : begin
-						
+						3'b010 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b111, 3'b010, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b011 : begin
@@ -1623,8 +2440,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b100 : begin
-						
+						3'b100 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b111, 3'b100, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(7) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b101 : begin
@@ -1671,8 +2523,43 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 								 end
 						end
 						
-						3'b110 : begin
-						
+						3'b110 : begin                                         // WRAP4
+						         wrapper.wrap_calc(3'b111, 3'b110, master_txn.haddr, address_queue_wrap);         //hsize, hburst, haddr
+								 
+								     vif.hsel      <= 1;
+			                         vif.hwrite    <= master_txn.hwrite;
+			                         vif.hmaster   <= master_txn.hmaster;
+			                         vif.hmastlock <= master_txn.hmastlock;
+			                         vif.htrans    <= 2'b10;
+			                         vif.hsize     <= master_txn.hsize;
+			                         vif.hburst    <= master_txn.hburst;
+			                         vif.haddr     <= address_queue_wrap.pop_front;
+			                         vif.hwdata    <= master_txn.hwdata;
+									 vif.hready    <= master_txn.hready;
+									 
+									 @(posedge vif.hclk);
+									 master_txn.hwdata = master_txn.hwdata + 10;
+									 
+									 repeat(3) begin
+								          while(!vif.hreadyout) begin
+								          @(posedge vif.hclk);
+								         end
+								 
+								        vif.hsel      <= 1;
+			                            vif.hwrite    <= master_txn.hwrite;
+			                            vif.hmaster   <= master_txn.hmaster;
+			                            vif.hmastlock <= master_txn.hmastlock;
+			                            vif.htrans    <= 2'b11;
+			                            vif.hsize     <= master_txn.hsize;
+			                            vif.hburst    <= master_txn.hburst;
+			                            vif.haddr     <= address_queue_wrap.pop_front;
+			                            vif.hwdata    <= master_txn.hwdata;
+									    vif.hready    <= master_txn.hready;
+								 
+								        @(posedge vif.hclk);
+									    master_txn.hwdata = master_txn.hwdata + 10;
+									end
+									 
 						end
 						
 						3'b111 : begin
@@ -1727,10 +2614,11 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 	endtask
 	
 	task basic_setups();
+    
 	    while(!vif.hresetn) begin
 			 @(posedge vif.hclk);
 		end
-		
+	
 		while(vif.hreadyout != 1) begin
 		     @(posedge vif.hclk);
 		end
@@ -1738,7 +2626,7 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 	    while(vif.hresp != 0) begin
 			 @(posedge vif.hclk);
 		end
-	
+   
 	endtask
 	
 	task run_phase(uvm_phase phase);
@@ -1746,9 +2634,11 @@ class AHB_master_driver extends uvm_driver #(AHB_master_txn);
 		forever begin
 		seq_item_port.get_next_item(master_txn);
         // `uvm_info("DRIVER",$sformatf("port connected to %0d export", seq_item_port.size()), UVM_MEDIUM)
-			basic_setups();
 			
+            basic_setups();
+          
 			@(posedge vif.hclk);
+ 
 			case(master_txn.htrans)
 			    2'b00 : idle();
 			    2'b01 : busy();
