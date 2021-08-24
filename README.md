@@ -14,8 +14,8 @@
 
 # Pending task 
 
-1. wrap type not implemented in driver(cpp code need to call in driver)
-2. monitor
+1. wrap type not implemented in driver(completed)
+2. monitor(progress)
 3. scoreboard
 4. coverage
 5. refrence model
