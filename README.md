@@ -14,7 +14,6 @@
 
 # Pending task 
 
-1. wrap type not implemented in driver(completed)
 2. monitor(progress)
 3. scoreboard
 4. coverage
