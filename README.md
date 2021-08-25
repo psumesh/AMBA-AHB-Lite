@@ -14,8 +14,7 @@
 
 # Pending task 
 
-2. monitor(progress)
-3. scoreboard
+3. scoreboard(progress)
 4. coverage
 5. refrence model
 6. Script 
